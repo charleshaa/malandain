@@ -26,7 +26,7 @@
         ."ID INT NOT NULL AUTO_INCREMENT,"
         ."title varchar(255) NOT NULL,"
         ."slug varchar(255) NOT NULL,"
-        ."amount DOUBLE NOT NULL DEFAULT 0.0,"
+        ."amount DECIMAL(10,6) NOT NULL DEFAULT 0.0,"
         ."num_people INT NOT NULL DEFAULT 0,"
         ."status enum('open', 'closed', 'paid') NOT NULL DEFAULT 'open',"
         ."currency enum('euro', 'chf', 'dollar') NOT NULL DEFAULT 'chf',"
@@ -36,7 +36,7 @@
 
     $spendingsQuery = "CREATE TABLE IF NOT EXISTS spendings ("
         ."ID INT NOT NULL AUTO_INCREMENT,"
-        ."amount DOUBLE NOT NULL DEFAULT 0.0,"
+        ."amount DECIMAL(10,6) NOT NULL DEFAULT 0.0,"
         ."description TEXT NOT NULL DEFAULT '',"
         ."date DATETIME,"
         ."author INT,"
