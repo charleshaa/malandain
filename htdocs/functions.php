@@ -109,15 +109,97 @@
 
     }
 
+    function get_pot($id){
+        global $database;
+
+        $sql = "SELECT * FROM pots WHERE ID = ".$id."";
+
+        $pot = $database->fetchRow($sql);
+
+        return $pot;
+    }
+
+    function get_last_pot(){
+        global $database;
+
+        $sql = "SELECT * FROM pots ORDER BY ID DESC LIMIT 1";
+
+        $pot = $database->fetchRow($sql);
+
+        return $pot;
+    }
+
+    function get_pot_spendings($pot_id){
+
+        global $database;
+
+        $sql = "SELECT * FROM spendings WHERE pot_id = ".$pot_id;
+        $spendings = $database->fetchAll($sql);
+
+        return $spendings;
+
+    }
+
     function get_user_pots(){
         global $database;
 
         $uid = $_SESSION['uid'];
 
-        $sql = "SELECT * FROM pots p, pot_members pp WHERE pp.user_id = {$uid} AND pp.pot_id = p.ID";
+        $sql = "SELECT p.*, e.slug as event_slug, e.title as event_name FROM pots p, pot_members pp, events e WHERE pp.user_id = {$uid} AND pp.pot_id = p.ID AND p.event_id = e.ID";
         $events = $database->fetchAll($sql);
         return $events;
     }
 
+
+    function get_expenses_activity(){
+        global $database;
+
+        $pot_ids = $database->fetchCol("SELECT pot_id FROM pot_members WHERE user_id = ".$_SESSION['uid']."");
+
+        $sql = "SELECT s.description, s.date, s.amount, s.author, u.display_name, p.title as pot_title, p.ID, p.currency FROM spendings s, pots p, users u WHERE p.ID = s.pot_id AND u.ID = s.author AND pot_id IN (".implode($pot_ids, ',').") ORDER BY s.ID DESC";
+
+        $expenses = $database->fetchAll($sql);
+        return $expenses;
+
+    }
+
+    function get_events(){
+        global $database;
+        return $database->select('events', '*');
+
+    }
+
+    function latest_event_id(){
+        global $database;
+
+        return $database->fetchOne("SELECT ID FROM EVENTS ORDER BY ID DESC LIMIT 1");
+
+    }
+
+    function create_event($name, $location){
+        global $database;
+        $pl = array(
+            'title' => $name,
+            'location' => $location,
+            'slug' => slugify($name)
+        );
+        return $database->insert('events', $pl);
+    }
+
+    function create_expense($pot_id, $amount, $description){
+
+        global $database;
+
+        $pl = array(
+            'amount' => $amount,
+            'description' => $description,
+            'date' => date("Y-m-d H:i:s"),
+            'author' => $_SESSION['uid'],
+            'pot_id' => $pot_id
+        );
+
+        return $database->insert('spendings', $pl);
+
+    }
 
  ?>

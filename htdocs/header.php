@@ -9,6 +9,9 @@
         <title><?php echo $page; ?> | Compte entre amis</title>
         <link rel="stylesheet" href="css/uikit.min.css">
         <script src="js/jquery.js"></script>
+        <script src="js/mustache.js"></script>
+        <script src="js/timeago.js"></script>
         <script src="js/uikit.min.js"></script>
         <script src="js/login.js"></script>
+        <script src="js/main.js"></script>
     </head>
